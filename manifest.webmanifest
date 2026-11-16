@@ -1,0 +1,10 @@
+{
+  "name": "BBHMM",
+  "short_name": "BBHMM",
+  "display": "standalone",
+  "background_color": "#0e0e0e",
+  "theme_color": "#0e0e0e",
+  "start_url": "./",
+  "scope": "./",
+  "icons": [{ "src": "./icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }]
+}

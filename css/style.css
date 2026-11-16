@@ -94,10 +94,9 @@ main {
 .row .del::after { content: ""; position: absolute; inset: 0 -1.2ch; }
 .row.armed { background: var(--fg); color: var(--bg); }
 
-/* Add button */
-#add {
+/* Add / clear buttons */
+#add, #clear {
   position: fixed;
-  right: max(16px, env(safe-area-inset-right));
   bottom: calc(16px + env(safe-area-inset-bottom));
   z-index: 6;
   background: var(--bg);
@@ -107,6 +106,10 @@ main {
   min-height: 48px;
   padding: 0 8px;
 }
+#add { right: max(16px, env(safe-area-inset-right)); }
+#clear { left: max(16px, env(safe-area-inset-left)); font-size: 16px; }
+#clear[hidden] { display: none; }
+#clear.armed { background: var(--fg); color: var(--bg); }
 
 /* Sheets */
 .backdrop { position: fixed; inset: 0; z-index: 10; background: rgba(0, 0, 0, 0.45); }

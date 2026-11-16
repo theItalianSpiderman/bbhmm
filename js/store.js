@@ -100,6 +100,12 @@ export function createStore(storage) {
       save();
     },
 
+    /** Tar bort alla poster; startbeloppet behålls. */
+    clearEntries() {
+      state = { ...state, entries: [] };
+      save();
+    },
+
     /** Datum stigande, sedan insättningsordning (seq). @returns {Entry[]} */
     sortedEntries() {
       return [...state.entries].sort((a, b) =>

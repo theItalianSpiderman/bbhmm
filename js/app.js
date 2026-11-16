@@ -18,7 +18,7 @@ function safeStorage() {
 const store = createStore(safeStorage());
 const $ = (id) => document.getElementById(id);
 const root = document.documentElement;
-const els = { probe: $('probe'), header: $('header'), hdr: $('hdr'), list: $('list'), add: $('add'), sheets: $('sheet-root') };
+const els = { probe: $('probe'), header: $('header'), hdr: $('hdr'), list: $('list'), add: $('add'), clear: $('clear'), sheets: $('sheet-root') };
 
 let cols = 0;
 let sheetOpen = false;
@@ -33,6 +33,11 @@ function disarm() {
     const b = armedRow.querySelector('.del');
     if (b) b.setAttribute('aria-label', 'Ta bort');
     armedRow = null;
+  }
+  if (els.clear.classList.contains('armed')) {
+    els.clear.classList.remove('armed');
+    els.clear.textContent = '[RENSA]';
+    els.clear.setAttribute('aria-label', 'Ta bort alla rader');
   }
 }
 
@@ -94,6 +99,7 @@ function renderList() {
     frag.append(el('div', 'row', bottomLine(lay)));
   }
   disarm();
+  els.clear.hidden = entries.length === 0;
   els.list.replaceChildren(frag);
 }
 
@@ -275,8 +281,21 @@ els.list.addEventListener('click', (ev) => {
   btn.setAttribute('aria-label', 'Bekräfta ta bort');
   armTimer = setTimeout(disarm, 3000);
 });
+els.clear.addEventListener('click', () => {
+  if (els.clear.classList.contains('armed')) {
+    disarm();
+    store.clearEntries();
+    render();
+    return;
+  }
+  disarm();
+  els.clear.classList.add('armed');
+  els.clear.textContent = '[SÄKER?]';
+  els.clear.setAttribute('aria-label', 'Bekräfta ta bort alla rader');
+  armTimer = setTimeout(disarm, 3000);
+});
 document.addEventListener('click', (ev) => {
-  if (!ev.target.closest('.del')) disarm();
+  if (!ev.target.closest('.del, #clear')) disarm();
 });
 window.addEventListener('resize', () => {
   if (measure()) render();

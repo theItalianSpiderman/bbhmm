@@ -100,3 +100,15 @@ test('load sanerar fel form: ogiltig start och ogiltiga poster tas bort', () => 
   const added = s.addEntry({ date: '2026-11-03', amount: 1, note: '' });
   assert.equal(added.seq, 2);
 });
+
+test('clearEntries tar bort alla poster men behåller start', () => {
+  const st = fakeStorage();
+  const s = createStore(st);
+  s.setStart(5000, '2026-11-01');
+  s.addEntry({ date: '2026-11-02', amount: 100, note: 'x' });
+  s.addEntry({ date: '2026-11-03', amount: 200, note: 'y' });
+  s.clearEntries();
+  const s2 = createStore(st);
+  assert.deepEqual(s2.state, { start: { amount: 5000, date: '2026-11-01' }, entries: [] });
+  assert.equal(s2.balance(), 5000);
+});

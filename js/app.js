@@ -22,6 +22,19 @@ const els = { probe: $('probe'), header: $('header'), hdr: $('hdr'), list: $('li
 
 let cols = 0;
 let sheetOpen = false;
+let armedRow = null;
+let armTimer = null;
+
+function disarm() {
+  clearTimeout(armTimer);
+  armTimer = null;
+  if (armedRow) {
+    armedRow.classList.remove('armed');
+    const b = armedRow.querySelector('.del');
+    if (b) b.setAttribute('aria-label', 'Ta bort');
+    armedRow = null;
+  }
+}
 
 function el(tag, cls, text) {
   const e = document.createElement(tag);
@@ -80,6 +93,7 @@ function renderList() {
     }
     frag.append(el('div', 'row', bottomLine(lay)));
   }
+  disarm();
   els.list.replaceChildren(frag);
 }
 
@@ -96,6 +110,7 @@ function scrollToBottom() {
 function openSheet({ title, fields, cancellable, onSubmit }) {
   if (sheetOpen) return;
   sheetOpen = true;
+  disarm();
 
   const backdrop = el('div', 'backdrop');
   const sheet = el('form', 'sheet');
@@ -247,8 +262,21 @@ els.header.addEventListener('keydown', (ev) => {
 els.list.addEventListener('click', (ev) => {
   const btn = ev.target.closest('.del');
   if (!btn) return;
-  store.removeEntry(btn.dataset.id);
-  render();
+  const row = btn.closest('.row');
+  if (row === armedRow) {
+    disarm();
+    store.removeEntry(btn.dataset.id);
+    render();
+    return;
+  }
+  disarm();
+  armedRow = row;
+  row.classList.add('armed');
+  btn.setAttribute('aria-label', 'Bekräfta ta bort');
+  armTimer = setTimeout(disarm, 3000);
+});
+document.addEventListener('click', (ev) => {
+  if (!ev.target.closest('.del')) disarm();
 });
 window.addEventListener('resize', () => {
   if (measure()) render();

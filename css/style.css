@@ -91,7 +91,8 @@ main {
   width: 1ch;
   overflow: visible;
 }
-.row .del::after { content: ""; position: absolute; inset: -4px -1.2ch; }
+.row .del::after { content: ""; position: absolute; inset: 0 -1.2ch; }
+.row.armed { background: var(--fg); color: var(--bg); }
 
 /* Add button */
 #add {
